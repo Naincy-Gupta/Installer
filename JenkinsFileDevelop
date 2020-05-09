@@ -1,0 +1,61 @@
+library 'reference-pipeline'
+
+pipeline{
+ agent {
+        docker {
+            image 'nexus2.prod.cloud.fedex.com:8444/fdx/jenkins/default-tools-image'
+            label 'docker'
+        }
+    }
+
+	parameters {
+		string(defaultValue: "ST-Titans-Device@corp.ds.fedex.com", description: 'Success Email List', name: 'successEmail')
+		string(defaultValue: "ST-Titans-Device@corp.ds.fedex.com", description: 'Failure Email List', name: 'errorEmail')
+	}
+
+	options {
+		buildDiscarder(logRotator(numToKeepStr: '20'))
+	}
+
+	tools {
+		jdk 'JAVA_8'
+		maven 'Maven 3.3.9'
+	}
+
+	stages{
+		stage('checkout'){
+			steps{
+				checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'develop'], [$class: 'WipeWorkspace']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '49da154a-96fe-49dd-9dc1-1300a07dc02a', url: 'git@gitlab.prod.fedex.com:APP3530951/peripheral-server-installer-project.git']]])
+			}
+		}
+
+		stage('Build'){
+			steps {
+				echo "This is the build step"
+				sh "mvn clean install -s settings.xml -Dmaven.test.skip=true"
+			}
+		}
+
+		stage('Deploy to Nexus'){
+			steps
+			{
+				echo "This step publishes the Release jar to Nexus Repositories"
+				script {
+					withCredentials([usernamePassword(credentialsId: 'peripheral-server-nexus-jenkins-deployment', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')])
+					{
+						sh "mvn clean deploy -s settings.xml -DNEXUS.USER=$NEXUS_USERNAME -DNEXUS.PASSWORD=$NEXUS_PASSWORD -Dmaven.test.skip=true"
+					}
+				}
+			}
+		}
+	}
+	
+	post {
+		failure {    // notify users when the Pipeline fails
+			mail(to: params.errorEmail, subject: "Jenkins RTL-Peripheral Server Installer Pipeline Failure Notice", body: "**************** SOMETHING WENT WRONG **********************\n\nHi\n\nThe Application Continuous Delivery pipeline for RTL-Peripheral Server Application failed. \n\nThe Link to the failed Jenkins pipeline can be found here: \n\n${env.BUILD_URL} \n\nPlease navigate to the above mentioned Jenkins job to see the logs.\n\nThanks!")
+		}
+		success {    // notify users when the Pipeline succeeds
+			mail(to: params.successEmail, subject: "Jenkins RTL-Peripheral Server Installer Pipeline Executed Successfully", body: "**************** Application Publish Successful **********************\n\nHi\n\nThe Application Continuous Delivery pipeline for RTL-Peripheral Server Application is Successfully executed. \n\nThe Link to the Successful Jenkins pipeline can be found here: \n\n${env.BUILD_URL} \n\nPlease navigate to the above mentioned Jenkins job to see the logs.\n\nThanks!")
+		}
+	}
+}

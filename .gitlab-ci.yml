@@ -1,0 +1,21 @@
+image: checkstyle/sonarqube-maven-git
+
+stages:
+  - build
+
+variables:
+  # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
+  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
+  #MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Dhttp.proxyHost=internet.proxy.fedex.com -Dhttp.proxyPort=3128 -Dhttps.proxyHost=internet.proxy.fedex.com -Dhttps.proxyPort=3128"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository -Dmaven.test.skip=true -Dbuildnumber=12345 -Dconfig.target.environment=localhost -Denvironment_name=localhost -Dhttp.proxyHost=internet.proxy.fedex.com -Dhttp.proxyPort=3128 -Dhttps.proxyHost=internet.proxy.fedex.com -Dhttps.proxyPort=3128"
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_REF_NAME"' 
+cache:
+  paths:
+    - .m2/repository
+
+maven-build:
+  stage: build
+  script: 
+    - mvn -q clean package -Dmaven.test.skip=true

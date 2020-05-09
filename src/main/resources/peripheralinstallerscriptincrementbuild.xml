@@ -1,0 +1,410 @@
+<PeripheralProject name="Peripheral-Server-0.0.1"
+	description="Peripheral Server Installer">
+	<PeripheralAction
+		name="PeripheralBuildInitializationAction"
+		description="This action creates the backup of the folder and stop the running peripheral server"
+		class="com.fedex.peripherals.installer.actions.PeripheralBuildInitializationAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="buildType"
+			propvalue="INCREMENTBUILD">
+		</PeripheralProperty>
+		<PeripheralProperty propname="serviceId"
+			propvalue="rtl-peripherals">
+		</PeripheralProperty>
+		<PeripheralProperty propname="peripheral.installer.ExecutableJarFileLocation"
+			propvalue="${peripheral.installer.ExecutableJarFileLocation}">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralServerStopAction"
+		description="stop peripheral server as windows service"
+		class="com.fedex.peripherals.installer.actions.PeripheralServerStopAction"
+		rollback="true" active="false" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="winswExeLoc"
+			propvalue="${peripheral.installer.installationLocation}\\serviceInstaller\\peripheral-server.exe">
+		</PeripheralProperty>
+		<PeripheralProperty propname="serviceId"
+			propvalue="rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>	
+	<PeripheralAction name="PeripheralCopyAction"
+		description="Copying the ServiceInstaller folder"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="srcPath"
+			propvalue="${peripheral.installer.installerLocation}\\serviceInstaller">
+		</PeripheralProperty>
+		<PeripheralProperty propname="destPath"
+			propvalue="${peripheral.installer.installationLocation}\\serviceInstaller\\">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="createDirIfNotPresent" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="deleteSourceDirectory" propvalue="false">
+		</PeripheralProperty>
+		<PeripheralProperty propname="backUpDestination"
+			propvalue="true">
+		</PeripheralProperty>
+	</PeripheralAction>   
+	<PeripheralAction name="PeripheralSearchAndCopyFileAction"
+		description="Search and Copy rt-peripherals jar from installer location to installation location"
+		class="com.fedex.peripherals.installer.actions.PeripheralSearchAndCopyFileAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="searchLocation"
+			propvalue="${peripheral.installer.installerLocation}\\lib\\">
+		</PeripheralProperty>
+		<PeripheralProperty propname="destPath"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\">
+		</PeripheralProperty>
+		<PeripheralProperty propname="fileSearchTerm"
+			propvalue="rtl-peripherals">
+		</PeripheralProperty>
+		<PeripheralProperty propname="fileSearchExtension"
+			propvalue=".jar">
+		</PeripheralProperty>		
+		<PeripheralProperty
+			propname="createDirIfNotPresent" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="deleteSourceDirectory" propvalue="false">
+		</PeripheralProperty>
+		<PeripheralProperty propname="backUpDestination"
+			propvalue="true">
+		</PeripheralProperty>
+	</PeripheralAction>  	
+	<PeripheralAction
+		name="PeripheralCopyResourceFromJarAction"
+		description="Copying peripheralconfig.properties from JAR file to a separate location"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyResourceFromJarAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="jarLoc"
+			propvalue="${peripheral.installer.installerLocation}\\lib\\">
+		</PeripheralProperty>
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\config\\peripheralconfig.properties">
+		</PeripheralProperty>
+		<PeripheralProperty propname="dllLocInJar"
+			propvalue="BOOT-INF/classes/peripheralconfig.properties">
+		</PeripheralProperty>
+		<PeripheralProperty propname="jarName"
+			propvalue= "rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction
+		name="PeripheralCopyResourceFromJarAction"
+		description="Copying jpos.xml from JAR file to a separate location"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyResourceFromJarAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="jarLoc"
+			propvalue="${peripheral.installer.installerLocation}\\lib\\">
+		</PeripheralProperty>
+		<PeripheralProperty propname="dllLocInJar"
+			propvalue="BOOT-INF/classes/jpos.xml">
+		</PeripheralProperty>
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\config\\jpos.xml">
+		</PeripheralProperty>
+		<PeripheralProperty propname="jarName"
+			propvalue= "rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction
+		name="PeripheralCopyResourceFromJarAction"
+		description="Copying the Epson related dlls zip file from JAR file to a separate location"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyResourceFromJarAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="jarLoc"
+			propvalue="${peripheral.installer.installerLocation}\\lib\\">
+		</PeripheralProperty>
+		<PeripheralProperty propname="dllLocInJar"
+			propvalue="BOOT-INF/lib/compressed-dlls-epson">
+		</PeripheralProperty>
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\extracted-compressed-dlls-epson.zip">
+		</PeripheralProperty>
+		<PeripheralProperty propname="jarName"
+			propvalue= "rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralUnZippedAction"
+		description="Extracting Epson related dll files from the ZIP file"
+		class="com.fedex.peripherals.installer.actions.PeripheralUnZippedAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\extracted-compressed-dlls-epson.zip">
+		</PeripheralProperty>
+		<PeripheralProperty propname="unZippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\">
+		</PeripheralProperty>		
+	</PeripheralAction>
+	<PeripheralAction
+		name="PeripheralCopyResourceFromJarAction"
+		description="Copying the Zsdk related dlls zip file from JAR file to a separate location"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyResourceFromJarAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="jarLoc"
+			propvalue="${peripheral.installer.installerLocation}\\lib\\">
+		</PeripheralProperty>
+		<PeripheralProperty propname="dllLocInJar"
+			propvalue="BOOT-INF/lib/compressed-dlls-zsdk">
+		</PeripheralProperty>
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\extracted-compressed-dlls-zsdk.zip">
+		</PeripheralProperty>
+		<PeripheralProperty propname="jarName"
+			propvalue= "rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralUnZippedAction"
+		description="Extracting Zsdk related dll files from the ZIP file"
+		class="com.fedex.peripherals.installer.actions.PeripheralUnZippedAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\extracted-compressed-dlls-zsdk.zip">
+		</PeripheralProperty>
+		<PeripheralProperty propname="unZippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\">
+		</PeripheralProperty>			
+	</PeripheralAction>
+	<PeripheralAction
+		name="PeripheralCopyResourceFromJarAction"
+		description="Copying the Zebra related dlls zip file from JAR file to a separate location"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyResourceFromJarAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="jarLoc"
+			propvalue="${peripheral.installer.installerLocation}\\lib\\">
+		</PeripheralProperty>
+		<PeripheralProperty propname="dllLocInJar"
+			propvalue="BOOT-INF/lib/compressed-dlls-zebra">
+		</PeripheralProperty>
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\extracted-compressed-dlls-zebra.zip">
+		</PeripheralProperty>
+		<PeripheralProperty propname="jarName"
+			propvalue= "rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralUnZippedAction"
+		description="Extracting Zebra related dll files from the ZIP file"
+		class="com.fedex.peripherals.installer.actions.PeripheralUnZippedAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\extracted-compressed-dlls-zebra.zip">
+		</PeripheralProperty>
+		<PeripheralProperty propname="unZippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\">
+		</PeripheralProperty>			
+	</PeripheralAction>
+	<PeripheralAction
+		name="PeripheralCopyResourceFromJarAction"
+		description="Copying the Honeywell related dlls zip file from JAR file to a separate location"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyResourceFromJarAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="jarLoc"
+			propvalue="${peripheral.installer.installerLocation}\\lib\\">
+		</PeripheralProperty>
+		<PeripheralProperty propname="dllLocInJar"
+			propvalue="BOOT-INF/lib/compressed-dlls-honeywell">
+		</PeripheralProperty>
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\extracted-compressed-dlls-honey.zip">
+		</PeripheralProperty>
+		<PeripheralProperty propname="jarName"
+			propvalue= "rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralUnZippedAction"
+		description="Extracting Honeywell related dll files from the ZIP file"
+		class="com.fedex.peripherals.installer.actions.PeripheralUnZippedAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="zippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\lib\\extracted-compressed-dlls-honey.zip">
+		</PeripheralProperty>
+		<PeripheralProperty propname="unZippedLoc"
+			propvalue="${peripheral.installer.installationLocation}\\">
+		</PeripheralProperty>			
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralCopyDllAction"
+		description="Copying the Zebra dll files from one folder to a common folder"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyDllAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="srcPath"
+			propvalue="${peripheral.installer.installationLocation}\\compressed-dlls-zebra">
+		</PeripheralProperty>
+		<PeripheralProperty propname="destPath"
+			propvalue="${peripheral.installer.installationLocation}\\dlls">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="createDirIfNotPresent" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="deleteSourceDirectory" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty propname="backUpDestination"
+			propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty propname="copyDlls"
+			propvalue="true">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralCopyDllAction"
+		description="Copying the Honeywell dll files from one folder to a common folder"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyDllAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="srcPath"
+			propvalue="${peripheral.installer.installationLocation}\\compressed-dlls-honeywell">
+		</PeripheralProperty>
+		<PeripheralProperty propname="destPath"
+			propvalue="${peripheral.installer.installationLocation}\\dlls">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="createDirIfNotPresent" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="deleteSourceDirectory" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty propname="backUpDestination"
+			propvalue="false">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralCopyDllAction"
+		description="Copying the epson dll files from one folder to a common folder"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyDllAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="srcPath"
+			propvalue="${peripheral.installer.installationLocation}\\compressed-dlls-epson">
+		</PeripheralProperty>
+		<PeripheralProperty propname="destPath"
+			propvalue="${peripheral.installer.installationLocation}\\dlls">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="createDirIfNotPresent" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="deleteSourceDirectory" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty propname="backUpDestination"
+			propvalue="false">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralCopyDllAction"
+		description="Copying the zsdk dll files from one folder to a common folder"
+		class="com.fedex.peripherals.installer.actions.PeripheralCopyDllAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="srcPath"
+			propvalue="${peripheral.installer.installationLocation}\\compressed-dlls-zsdk">
+		</PeripheralProperty>
+		<PeripheralProperty propname="destPath"
+			propvalue="${peripheral.installer.installationLocation}\\dlls">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="createDirIfNotPresent" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty
+			propname="deleteSourceDirectory" propvalue="true">
+		</PeripheralProperty>
+		<PeripheralProperty propname="backUpDestination"
+			propvalue="false">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralUpdateHostNameAction"
+		description="This action updates the property in perpheral configuartion file"
+		class="com.fedex.peripherals.installer.actions.PeripheralUpdateHostNameAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="COPYDEPENDENCYPHASE"
+		retryCount="1">
+		<PeripheralProperty propname="proFileLoc"
+			propvalue="${peripheral.installer.installationLocation}\\config\\peripheralconfig.properties">
+		</PeripheralProperty>
+		<PeripheralProperty propname="proName"
+			propvalue="peripheral.barcodescanner.websocketexternalendpointip">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralServerDeviceEnableAction"
+		description="Updates properties file of peripheral server with enabled and disabled devices"
+		class="com.fedex.peripherals.installer.actions.PeripheralServerDeviceEnableAction"
+		rollback="true" active="true" exitOnFail="false"
+		peripheralSoftwareUpdatePhase="APPLICATION_RUN_PHASE"
+		retryCount="2">
+		<PeripheralProperty propname="proFileLoc"
+			propvalue="${peripheral.installer.installationLocation}\\config\\peripheralconfig.properties">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralServerStartAction"
+		description="Starts peripheral server as windows service"
+		class="com.fedex.peripherals.installer.actions.PeripheralServerStartAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="APPLICATION_RUN_PHASE"
+		retryCount="1">
+		<PeripheralProperty propname="winswExeLoc"
+			propvalue="${peripheral.installer.installationLocation}\\serviceInstaller\\peripheral-server.exe">
+		</PeripheralProperty>
+		<PeripheralProperty propname="serviceId"
+			propvalue="rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralInstallationVerificationAction"
+		description="Verify peripheral server is installed as windows service"
+		class="com.fedex.peripherals.installer.actions.PeripheralInstallationVerificationAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="VALIDATIONPHASE"
+		retryCount="1">
+	</PeripheralAction>
+	<PeripheralAction name="PeripheralServerStopAction"
+		description="Stop peripheral server windows service"
+		class="com.fedex.peripherals.installer.actions.PeripheralServerStopAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="APPLICATION_STOP_PHASE"
+		retryCount="1">
+		<PeripheralProperty propname="winswExeLoc"
+			propvalue="${peripheral.installer.installationLocation}\\serviceInstaller\\peripheral-server.exe">
+		</PeripheralProperty>
+		<PeripheralProperty propname="serviceId"
+			propvalue="rtl-peripherals">
+		</PeripheralProperty>
+	</PeripheralAction>
+	<PeripheralAction
+		name="PeripheralEmailNotificationAction"
+		description="This action sends the email notifications"
+		class="com.fedex.peripherals.installer.actions.PeripheralEmailNotificationAction"
+		rollback="true" active="true" exitOnFail="true"
+		peripheralSoftwareUpdatePhase="REPORTINGPHASE"
+		retryCount="1">
+	</PeripheralAction>	
+</PeripheralProject>
